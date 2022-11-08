@@ -101,7 +101,7 @@ public class OrderManager extends JFrame {
 
     buttonPanel.add(lblOrderType);
     buttonPanel.add(cmbOrderType);
-    buttonPanel.add(lblOrderAmount);
+    //buttonPanel.add(lblOrderAmount);
     //aqui se agregaria el panel
     buttonPanel.add(panOrderCriteria);
     buttonPanel.add(lblTotal);
@@ -120,11 +120,11 @@ public class OrderManager extends JFrame {
     gbc.gridx = 1;
     gbc.gridy = 0;
     gridbag.setConstraints(cmbOrderType, gbc);
-    gbc.anchor = GridBagConstraints.EAST;
+    /*gbc.anchor = GridBagConstraints.EAST;
     gbc.gridx = 0;
     gbc.gridy = 1;
     gridbag.setConstraints(lblOrderAmount, gbc);
-
+*/
     //este se cambia por el panel
     gbc.anchor = GridBagConstraints.EAST;
     gbc.gridx = 0;
@@ -172,7 +172,7 @@ public class OrderManager extends JFrame {
                            );
 
     //frame.pack();
-    frame.setSize(500, 400);
+    frame.setSize(600, 500);
     frame.setLocationRelativeTo(null);
     frame.setVisible(true);
   }
@@ -347,13 +347,13 @@ class   BuilderFactory {
   public UIBuilder getUIBuilder(String str) {
     UIBuilder builder = null;
     if (str.equals(OrderManager.CA_ORDER)) {
-      builder = new CaliforniaOrderUIBuilder();
+      builder = new CaliforniaCreateOrderUIBuilder();
     } else if (str.equals(OrderManager.NON_CA_ORDER)) {
-      builder = new NonCaliforniaOrderUIBuilder();
+      builder = new NonCaliforniaCreateOrderUIBuilder();
     } else if (str.equals(OrderManager.EUROPEAN_ORDER)) {
-      builder = new EuropeanOrderUIBuilder();
+      builder = new EuropeanCreateOrderUIBuilder();
     } else if (str.equals(OrderManager.OVERSEAS_ORDER)) {
-      builder = new OverseasOrderUIBuilder();
+      builder = new OverseasCreateOrderUIBuilder();
     }
     return builder;
   }

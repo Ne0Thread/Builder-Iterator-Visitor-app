@@ -2,17 +2,25 @@ import javax.swing.*;
 import java.awt.*;
 
 public class NonCaliforniaOrderUIBuilder extends UIBuilder{
+    private JTextField txtID = new JTextField(15);
+    private JLabel lblId = new JLabel("ID :") ;
     private JTextField txtOrderAmount = new JTextField(15);
+    private JLabel lblOrderAmout = new JLabel("Order Amount :");
+
     @Override
     public void addUIControls() {
         orderUI = new JPanel();
-        JLabel lblOrderAmout = new JLabel("Order Amount :");
 
         GridBagLayout gridbag = new GridBagLayout();
         orderUI.setLayout(gridbag);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.anchor =GridBagConstraints.WEST;
 
+
+        orderUI.add(lblId);
+        orderUI.add(txtID);
+        orderUI.add(lblId);
+        orderUI.add(txtID);
         orderUI.add(lblOrderAmout);
         orderUI.add(txtOrderAmount);
 
@@ -24,6 +32,9 @@ public class NonCaliforniaOrderUIBuilder extends UIBuilder{
 
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gridbag.setConstraints(txtID, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
         gridbag.setConstraints(lblOrderAmout, gbc);
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -33,7 +44,13 @@ public class NonCaliforniaOrderUIBuilder extends UIBuilder{
 
     @Override
     public void initialize() {
+        txtID.setText("Ord_1");
         txtOrderAmount.setText("");
+    }
+
+    @Override
+    public JTextField getJTextFieldID() {
+        return txtID;
     }
 
     @Override

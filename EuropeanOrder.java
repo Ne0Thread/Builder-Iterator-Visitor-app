@@ -5,7 +5,7 @@ public class EuropeanOrder implements Order{
 
     public EuropeanOrder() {
     }
-    public EuropeanOrder(String idEUO, Double inp_orderAmount,
+    public EuropeanOrder(String idEUO, double inp_orderAmount,
                          double inp_additionalSH) {
         idOrder = idEUO;
         orderAmount = inp_orderAmount;
@@ -20,4 +20,5 @@ public class EuropeanOrder implements Order{
     public void accept(OrderVisitor v) {
         v.visit(this);
     }
+    public String getIdOrder(){return idOrder;}
 }

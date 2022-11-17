@@ -8,7 +8,7 @@ public abstract class UIBuilder {
     public JPanel getOrderUI(){
         return orderUI;
     }
-
+    public abstract JTextField getJTextFieldID();
     public abstract JTextField getJTextFieldAmount();
     public abstract JTextField getJTextFieldTax();
     public abstract JTextField getJTextFieldSH();

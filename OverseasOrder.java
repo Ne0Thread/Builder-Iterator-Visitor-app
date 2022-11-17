@@ -20,4 +20,5 @@ public class OverseasOrder implements Order {
   public void accept(OrderVisitor v) {
     v.visit(this);
   }
+  public String getIdOrder(){return idOrder;}
 }

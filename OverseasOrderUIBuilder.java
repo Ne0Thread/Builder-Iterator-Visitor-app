@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class OverseasOrderUIBuilder extends UIBuilder{
+    private JTextField txtID = new JTextField(15);
+    private JLabel lblId = new JLabel("ID :") ;
     private JTextField txtOrderAmount = new JTextField(15);
     private JTextField txtAdditionalSH = new JTextField(15);
     @Override
@@ -15,6 +17,8 @@ public class OverseasOrderUIBuilder extends UIBuilder{
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.anchor =GridBagConstraints.WEST;
 
+        orderUI.add(lblId);
+        orderUI.add(txtID);
         orderUI.add(lblOrderAmout);
         orderUI.add(txtOrderAmount);
         orderUI.add(lblAdditionalTax);
@@ -43,8 +47,14 @@ public class OverseasOrderUIBuilder extends UIBuilder{
 
     @Override
     public void initialize() {
+        txtID.setText("Ord_1");
         txtOrderAmount.setText("");
         txtAdditionalSH.setText("");
+    }
+
+    @Override
+    public JTextField getJTextFieldID() {
+        return txtID;
     }
 
     @Override

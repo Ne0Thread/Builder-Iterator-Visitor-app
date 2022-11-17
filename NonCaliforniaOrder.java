@@ -1,9 +1,11 @@
 public class NonCaliforniaOrder implements Order {
+  private String idOrder;
   private double orderAmount;
 
   public NonCaliforniaOrder() {
   }
-  public NonCaliforniaOrder(double inp_orderAmount) {
+  public NonCaliforniaOrder(String idNCO,double inp_orderAmount) {
+    idOrder = idNCO;
     orderAmount = inp_orderAmount;
   }
   public double getOrderAmount() {

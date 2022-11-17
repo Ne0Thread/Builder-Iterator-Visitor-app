@@ -18,7 +18,7 @@ public class OrderManager extends JFrame {
 
 
   private JComboBox cmbOrderType;
-  private JTextField txtOrderAmount, txtAdditionalTax,
+  private JTextField txtOrderId,txtOrderAmount, txtAdditionalTax,
   txtAdditionalSH;
   private JLabel lblOrderType, lblOrderAmount;
   private JLabel lblAdditionalTax, lblAdditionalSH;
@@ -217,7 +217,13 @@ public class OrderManager extends JFrame {
       return "0";
     }
   }
-
+public String getID(){
+    if (!(txtOrderId == null)){
+      return txtOrderId.getText();
+    }else{
+      return null;
+    }
+}
   public void setTxtOrderAmount(JTextField oAJtextF){
     this.txtOrderAmount = oAJtextF;
   }
@@ -238,73 +244,74 @@ class ButtonHandler implements ActionListener {
     if (e.getActionCommand().equals(OrderManager.EXIT)) {
       System.exit(1);
     }
-    if (e.getSource() == objOrderManager.getOrderTypeCtrl()){
-      //Obtiene el la seleccion del combobox
-      String selection = objOrderManager.getOrderType();
-      //Elimina si el primer elemento del combo box es vacio
-      if (objOrderManager.getOrderTypeCtrl().getItemAt(0).equals("")) {
-        objOrderManager.getOrderTypeCtrl().removeItemAt(0);
+    if (e.getSource() == objOrderManager.getOrderTypeCtrl()) {
+      if (!objOrderManager.getOrderType().equals("")) {
+        //Obtiene el la seleccion del combobox
+        String selection = objOrderManager.getOrderType();
+        //Elimina si el primer elemento del combo box es vacio
+        if (objOrderManager.getOrderTypeCtrl().getItemAt(0).equals("")) {
+          objOrderManager.getOrderTypeCtrl().removeItemAt(0);
+        }
+        BuilderFactory factory = new BuilderFactory();
+        //crea una insatancia apropiada del constructor(builder)
+        builder = factory.getUIBuilder(selection);
+        //genera cargadores para los datos de textField no importa el constructor concreto
+        // objOrderManager.setTxtAdditionalSH(builder.getJTextFieldSH());
+        //objOrderManager.setTxtOrderAmount(builder.getJTextFieldAmount());
+        //objOrderManager.setTxtAdditionalTax(builder.getJTextFieldTax());
+        //configura el director con el constructor
+        UIDirector director = new UIDirector(builder);
+        //metodos
+        director.build();
+        //obtiene el objeto constructor final
+        JPanel UIobj = builder.getOrderUI();
+        objOrderManager.displayNewUI(UIobj);
       }
-      BuilderFactory factory = new BuilderFactory();
-      //crea una insatancia apropiada del constructor(builder)
-      builder = factory.getUIBuilder(selection);
-      //genera cargadores para los datos de textField no importa el constructor concreto
-      objOrderManager.setTxtAdditionalSH(builder.getJTextFieldSH());
-      objOrderManager.setTxtOrderAmount(builder.getJTextFieldAmount());
-      objOrderManager.setTxtAdditionalTax(builder.getJTextFieldTax());
-      //configura el director con el constructor
-      UIDirector director = new UIDirector(builder);
-      //metodos
-      director.build();
-      //obtiene el objeto constructor final
-      JPanel UIobj =builder.getOrderUI();
-      objOrderManager.displayNewUI(UIobj);
-
     }
-    if (e.getActionCommand().equals(OrderManager.CREATE_ORDER)
-        ) {
-      //get input values
-      String orderType = (String) objOrderManager.getOrderType();
+      if (e.getActionCommand().equals(OrderManager.CREATE_ORDER)
+      ) {
+        //get input values
+        String orderType = (String) objOrderManager.getOrderType();
 
-      String strOrderAmount =
-        objOrderManager.getOrderAmount();
-      String strTax = objOrderManager.getTax();
-      String strSH = objOrderManager.getSH();
+        String strID = objOrderManager.getID();
+        String strOrderAmount =
+                objOrderManager.getOrderAmount();
+        String strTax = objOrderManager.getTax();
+        String strSH = objOrderManager.getSH();
 
-      double dblOrderAmount = 0.0;
-      double dblTax = 0.0;
-      double dblSH = 0.0;
+        double dblOrderAmount = 0.0;
+        double dblTax = 0.0;
+        double dblSH = 0.0;
 
-      if (strOrderAmount.trim().length() == 0) {
-        strOrderAmount = "0.0";
-      }
-      if (strTax.trim().length() == 0) {
+        if (strOrderAmount.trim().length() == 0) {
+          strOrderAmount = "0.0";
+        }
+        if (strTax.trim().length() == 0) {
           strTax = "0.0";
+        }
+        if (strSH.trim().length() == 0) {
+          strSH = "0.0";
+        }
+
+        dblOrderAmount =
+                Double.parseDouble(strOrderAmount);
+        dblTax = Double.parseDouble(strTax);
+        dblSH = Double.parseDouble(strSH);
+
+        //Create the order
+        Order order = createOrder(strID, orderType, dblOrderAmount,
+                dblTax, dblSH);
+
+        //Get the Visitor
+        OrderVisitor visitor =
+                objOrderManager.getOrderVisitor();
+
+        // accept the visitor instance
+        order.accept(visitor);
+
+        objOrderManager.setTotalValue(
+                " Order Created Successfully");
       }
-      if (strSH.trim().length() == 0) {
-        strSH = "0.0";
-      }
-
-      dblOrderAmount =
-              Double.parseDouble(strOrderAmount);
-      dblTax = Double.parseDouble(strTax);
-      dblSH = Double.parseDouble(strSH);
-
-      //Create the order
-      Order order = createOrder(orderType, dblOrderAmount,
-                    dblTax, dblSH);
-
-      //Get the Visitor
-      OrderVisitor visitor =
-        objOrderManager.getOrderVisitor();
-
-      // accept the visitor instance
-      order.accept(visitor);
-
-      objOrderManager.setTotalValue(
-        " Order Created Successfully");
-    }
-
     if (e.getActionCommand().equals(OrderManager.GET_TOTAL)) {
       //Get the Visitor
       OrderVisitor visitor =
@@ -315,22 +322,22 @@ class ButtonHandler implements ActionListener {
     }
   }
 
-  public Order createOrder(String orderType,
+  public Order createOrder(String idOr ,String orderType,
       double orderAmount, double tax, double SH) {
     if (orderType.equalsIgnoreCase(OrderManager.CA_ORDER)) {
-      return new CaliforniaOrder(orderAmount, tax);
+      return new CaliforniaOrder(idOr,orderAmount, tax);
     }
     if (orderType.equalsIgnoreCase(
       OrderManager.NON_CA_ORDER)) {
-      return new NonCaliforniaOrder(orderAmount);
+      return new NonCaliforniaOrder(idOr,orderAmount);
     }
     if (orderType.equalsIgnoreCase(
           OrderManager.OVERSEAS_ORDER)) {
-      return new OverseasOrder(orderAmount, SH);
+      return new OverseasOrder(idOr,orderAmount, SH);
     }
     if(orderType.equalsIgnoreCase(
             OrderManager.EUROPEAN_ORDER)){
-      return new EuropeanOrder(orderAmount,SH);
+      return new EuropeanOrder(idOr,orderAmount,SH);
     }
     return null;
   }

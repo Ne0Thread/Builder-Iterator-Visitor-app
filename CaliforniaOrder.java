@@ -17,6 +17,12 @@ public class CaliforniaOrder implements Order {
   public double getAdditionalTax() {
     return additionalTax;
   }
+  public void setOrderAmount(Double oa){
+    orderAmount = oa;
+  }
+  public void setAdditionalTax(double addT){
+    additionalTax = addT;
+  }
   public void accept(OrderVisitor v) {
     v.visit(this);
   }

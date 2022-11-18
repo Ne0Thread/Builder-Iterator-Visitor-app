@@ -8,6 +8,8 @@ public class OrderManager extends JFrame {
   public static final String newline = "\n";
   public static final String GET_TOTAL = "Get Total";
   public static final String CREATE_ORDER = "CreateOrder";
+  public static final String EDIT_ORDER = "Edit Order";
+  public static final String DELETE_ORDER = "Delete Order";
   public static final String EXIT = "Exit";
   public static final String CA_ORDER = "CaliforniaOrder";
   public static final String NON_CA_ORDER = 
@@ -63,6 +65,8 @@ public class OrderManager extends JFrame {
     JButton createOrderButton =
       new JButton(OrderManager.CREATE_ORDER);
     getTotalButton.setMnemonic(KeyEvent.VK_C);
+    JButton editOrderButton = new JButton(OrderManager.EDIT_ORDER);
+    JButton deleteOrderButton = new JButton(OrderManager.DELETE_ORDER);
     JButton exitButton = new JButton(OrderManager.EXIT);
     exitButton.setMnemonic(KeyEvent.VK_X);
     ButtonHandler objButtonHandler = new ButtonHandler(this);
@@ -70,6 +74,8 @@ public class OrderManager extends JFrame {
 
     getTotalButton.addActionListener(objButtonHandler);
     createOrderButton.addActionListener(objButtonHandler);
+    editOrderButton.addActionListener(objButtonHandler);
+    deleteOrderButton.addActionListener(objButtonHandler);
     exitButton.addActionListener(new ButtonHandler());
     cmbOrderType.addActionListener(objButtonHandler);
 
@@ -80,9 +86,13 @@ public class OrderManager extends JFrame {
     GridBagLayout gridbag2 = new GridBagLayout();
     panel.setLayout(gridbag2);
     GridBagConstraints gbc2 = new GridBagConstraints();
+
     panel.add(getTotalButton);
     panel.add(createOrderButton);
+    panel.add(editOrderButton);
+    panel.add(deleteOrderButton);
     panel.add(exitButton);
+
     gbc2.anchor = GridBagConstraints.EAST;
     gbc2.gridx = 0;
     gbc2.gridy = 0;
@@ -91,6 +101,12 @@ public class OrderManager extends JFrame {
     gbc2.gridy = 0;
     gridbag2.setConstraints(getTotalButton, gbc2);
     gbc2.gridx = 2;
+    gbc2.gridy = 0;
+    gridbag2.setConstraints(editOrderButton, gbc2);
+    gbc2.gridx = 3;
+    gbc2.gridy = 0;
+    gridbag2.setConstraints(deleteOrderButton, gbc2);
+    gbc2.gridx = 4;
     gbc2.gridy = 0;
     gridbag2.setConstraints(exitButton, gbc2);
 
@@ -369,6 +385,84 @@ class ButtonHandler implements ActionListener {
         }
       }
       objOrderManager.setTexAreaSelectedOrders(selectedOrders);
+    }
+    if (e.getActionCommand().equals(OrderManager.EDIT_ORDER)){
+      Boolean flag = false;
+      String orderType = (String) objOrderManager.getOrderType();
+      OrderVisitor visitor = objOrderManager.getOrderVisitor();
+      Iterator specifOrders = visitor.getFilteredOrders(orderType);
+      while (specifOrders.hasNext()) {
+        Order o = (Order) specifOrders.next();
+        if (o.getClass().equals(CaliforniaOrder.class)){
+          if (((CaliforniaOrder) o).getIdOrder().equals(objOrderManager.getID())){
+            flag = true;
+            ((CaliforniaOrder) o).setOrderAmount(Double.parseDouble(objOrderManager.getOrderAmount()));
+            ((CaliforniaOrder) o).setAdditionalTax(Double.parseDouble(objOrderManager.getTax()));
+            break;
+          }
+        } else if (o.getClass().equals(NonCaliforniaOrder.class)) {
+          if (((NonCaliforniaOrder) o).getIdOrder().equals(objOrderManager.getID())){
+            ((NonCaliforniaOrder) o).setOrderAmount(Double.parseDouble(objOrderManager.getOrderAmount()));
+            flag = true;
+            break;
+          }
+        } else if (o.getClass().equals(OverseasOrder.class)) {
+          if (((OverseasOrder) o).getIdOrder().equals(objOrderManager.getID())){
+            ((OverseasOrder) o).setOrderAmount(Double.parseDouble(objOrderManager.getOrderAmount()));
+            ((OverseasOrder) o).setAdditionalSH(Double.parseDouble(objOrderManager.getSH()));
+            flag = true;
+            break;
+          }
+        }else if (o.getClass().equals(EuropeanOrder.class)){
+          if (((EuropeanOrder) o).getIdOrder().equals(objOrderManager.getID())){
+            ((EuropeanOrder) o).setOrderAmount(Double.parseDouble(objOrderManager.getOrderAmount()));
+            ((EuropeanOrder) o).setAdditionalSH(Double.parseDouble(objOrderManager.getSH()));
+            flag = true;
+            break;
+          }
+        }
+      }
+      if (flag!=true){
+        objOrderManager.setTotalValue("The Orden Doesn't exist!!");
+      }
+
+    }
+    if (e.getActionCommand().equals(OrderManager.DELETE_ORDER)){
+      Boolean flag = false;
+      String orderType = (String) objOrderManager.getOrderType();
+      OrderVisitor visitor = objOrderManager.getOrderVisitor();
+      Iterator specifOrders = visitor.getFilteredOrders(orderType);
+      while (specifOrders.hasNext()) {
+        Order o = (Order) specifOrders.next();
+        if (o.getClass().equals(CaliforniaOrder.class)){
+          if (((CaliforniaOrder) o).getIdOrder().equals(objOrderManager.getID())){
+            specifOrders.remove();
+            flag = true;
+            break;
+          }
+        } else if (o.getClass().equals(NonCaliforniaOrder.class)) {
+          if (((NonCaliforniaOrder) o).getIdOrder().equals(objOrderManager.getID())){
+            specifOrders.remove();
+            flag = true;
+            break;
+          }
+        } else if (o.getClass().equals(OverseasOrder.class)) {
+          if (((OverseasOrder) o).getIdOrder().equals(objOrderManager.getID())){
+            specifOrders.remove();
+            flag = true;
+            break;
+          }
+        }else if (o.getClass().equals(EuropeanOrder.class)){
+          if (((EuropeanOrder) o).getIdOrder().equals(objOrderManager.getID())){
+            specifOrders.remove();
+            flag = true;
+            break;
+          }
+        }
+      }
+      if (flag!=true){
+        objOrderManager.setTotalValue("The Orden Doesn't exist!!");
+      }
     }
   }
 

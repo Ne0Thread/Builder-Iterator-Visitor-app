@@ -11,6 +11,12 @@ public class OverseasOrder implements Order {
     orderAmount = inp_orderAmount;
     additionalSH = inp_additionalSH;
   }
+  public void setOrderAmount(Double oa){
+    orderAmount = oa;
+  }
+  public void setAdditionalSH(double addSH){
+    additionalSH = addSH;
+  }
   public double getOrderAmount() {
     return orderAmount;
   }

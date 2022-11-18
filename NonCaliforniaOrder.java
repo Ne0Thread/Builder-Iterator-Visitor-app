@@ -8,6 +8,9 @@ public class NonCaliforniaOrder implements Order {
     idOrder = idNCO;
     orderAmount = inp_orderAmount;
   }
+  public void setOrderAmount(Double oa){
+    orderAmount = oa;
+  }
   public double getOrderAmount() {
     return orderAmount;
   }

@@ -44,6 +44,5 @@ public class FilteredOrders implements Iterator {
 
     @Override
     public void remove() {
-        Iterator.super.remove();
     }
 }

@@ -18,8 +18,7 @@ public class OrderManager extends JFrame {
 
 
   private JComboBox cmbOrderType;
-  private JTextField txtOrderId,txtOrderAmount, txtAdditionalTax,
-  txtAdditionalSH;
+  private JTextField txtOrderId,txtOrderAmount, txtAdditionalTax,txtAdditionalSH;
   private JLabel lblOrderType, lblOrderAmount;
   private JLabel lblAdditionalTax, lblAdditionalSH;
   private JLabel lblTotal, lblTotalValue;
@@ -172,7 +171,7 @@ public class OrderManager extends JFrame {
                            );
 
     //frame.pack();
-    frame.setSize(500, 400);
+    frame.setSize(600, 600);
     frame.setLocationRelativeTo(null);
     frame.setVisible(true);
   }
@@ -217,13 +216,17 @@ public class OrderManager extends JFrame {
       return "0";
     }
   }
-public String getID(){
+  public String getID(){
     if (!(txtOrderId == null)){
       return txtOrderId.getText();
     }else{
       return null;
     }
-}
+  }
+  public void setTxtOrderId(JTextField idJtextF){
+    this.txtOrderId = idJtextF;
+  }
+
   public void setTxtOrderAmount(JTextField oAJtextF){
     this.txtOrderAmount = oAJtextF;
   }
@@ -231,7 +234,7 @@ public String getID(){
     this.txtAdditionalTax = aTAXJtextF;
   }
   public void setTxtAdditionalSH(JTextField aSHJTextF){
-    this.txtAdditionalTax = aSHJTextF;
+    this.txtAdditionalSH = aSHJTextF;
   }
 } // End of class OrderManager
 
@@ -256,9 +259,10 @@ class ButtonHandler implements ActionListener {
         //crea una insatancia apropiada del constructor(builder)
         builder = factory.getUIBuilder(selection);
         //genera cargadores para los datos de textField no importa el constructor concreto
-        // objOrderManager.setTxtAdditionalSH(builder.getJTextFieldSH());
-        //objOrderManager.setTxtOrderAmount(builder.getJTextFieldAmount());
-        //objOrderManager.setTxtAdditionalTax(builder.getJTextFieldTax());
+        objOrderManager.setTxtOrderId(builder.getJTextFieldID());
+        objOrderManager.setTxtOrderAmount(builder.getJTextFieldAmount());
+        objOrderManager.setTxtAdditionalTax(builder.getJTextFieldTax());
+        objOrderManager.setTxtAdditionalSH(builder.getJTextFieldSH());
         //configura el director con el constructor
         UIDirector director = new UIDirector(builder);
         //metodos
@@ -278,6 +282,7 @@ class ButtonHandler implements ActionListener {
                 objOrderManager.getOrderAmount();
         String strTax = objOrderManager.getTax();
         String strSH = objOrderManager.getSH();
+        System.out.println(strSH+"SH");
 
         double dblOrderAmount = 0.0;
         double dblTax = 0.0;

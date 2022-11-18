@@ -32,17 +32,22 @@ public class EuropeanOrderUIBuilder extends UIBuilder{
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gridbag.setConstraints(lblOrderAmout, gbc);
+        gridbag.setConstraints(lblId, gbc);
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gridbag.setConstraints(txtOrderAmount, gbc);
+        gridbag.setConstraints(txtID, gbc);
         gbc.gridx = 0;
         gbc.gridy = 2;
-        gridbag.setConstraints(lblAdditionalTax, gbc);
-
-        gbc.anchor = GridBagConstraints.WEST;
+        gridbag.setConstraints(lblOrderAmout, gbc);
         gbc.gridx = 0;
         gbc.gridy = 3;
+        gridbag.setConstraints(txtOrderAmount, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gridbag.setConstraints(lblAdditionalTax, gbc);
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.gridx = 0;
+        gbc.gridy = 5;
         gridbag.setConstraints(txtAdditionalSH, gbc);
 
     }

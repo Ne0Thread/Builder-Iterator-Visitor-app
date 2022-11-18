@@ -30,18 +30,23 @@ public class OverseasOrderUIBuilder extends UIBuilder{
         gbc.insets.right = 5;
 
         gbc.gridx = 0;
-        gbc.gridy = 0;
-        gridbag.setConstraints(lblOrderAmout, gbc);
-        gbc.gridx = 0;
         gbc.gridy = 1;
-        gridbag.setConstraints(txtOrderAmount, gbc);
+        gridbag.setConstraints(lblId, gbc);
         gbc.gridx = 0;
         gbc.gridy = 2;
-        gridbag.setConstraints(lblAdditionalTax, gbc);
-
-        gbc.anchor = GridBagConstraints.WEST;
+        gridbag.setConstraints(txtID, gbc);
         gbc.gridx = 0;
         gbc.gridy = 3;
+        gridbag.setConstraints(lblOrderAmout, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gridbag.setConstraints(txtOrderAmount, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gridbag.setConstraints(lblAdditionalTax, gbc);
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.gridx = 0;
+        gbc.gridy = 6;
         gridbag.setConstraints(txtAdditionalSH, gbc);
     }
 

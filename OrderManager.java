@@ -1,24 +1,26 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Iterator;
 
 
 public class OrderManager extends JFrame {
   public static final String newline = "\n";
   public static final String GET_TOTAL = "Get Total";
-  public static final String CREATE_ORDER = "Create Order";
+  public static final String CREATE_ORDER = "CreateOrder";
   public static final String EXIT = "Exit";
-  public static final String CA_ORDER = "California Order";
+  public static final String CA_ORDER = "CaliforniaOrder";
   public static final String NON_CA_ORDER = 
-    "Non-California Order";
+    "NonCaliforniaOrder";
 
-  public static final String OVERSEAS_ORDER = "Overseas Order";
-  public static final String EUROPEAN_ORDER = "European Order";
+  public static final String OVERSEAS_ORDER = "OverseasOrder";
+  public static final String EUROPEAN_ORDER = "EuropeanOrder";
   public static final String BLANK = "";
 
 
   private JComboBox cmbOrderType;
   private JTextField txtOrderId,txtOrderAmount, txtAdditionalTax,txtAdditionalSH;
+  private JTextArea texAreaSelectedOrders;
   private JLabel lblOrderType, lblOrderAmount;
   private JLabel lblAdditionalTax, lblAdditionalSH;
   private JLabel lblTotal, lblTotalValue;
@@ -44,6 +46,8 @@ public class OrderManager extends JFrame {
     txtOrderAmount = new JTextField(10);
     txtAdditionalTax = new JTextField(10);
     txtAdditionalSH = new JTextField(10);
+
+    texAreaSelectedOrders = new JTextArea(15,30);
 
     lblOrderType = new JLabel("Order Type:");
     lblOrderAmount = new JLabel("Order Amount:");
@@ -105,6 +109,8 @@ public class OrderManager extends JFrame {
     buttonPanel.add(panOrderCriteria);
     buttonPanel.add(lblTotal);
     buttonPanel.add(lblTotalValue);
+    //aqui se agregaria el JTextArea
+    buttonPanel.add(texAreaSelectedOrders);
 
     gbc.insets.top = 5;
     gbc.insets.bottom = 5;
@@ -139,6 +145,10 @@ public class OrderManager extends JFrame {
     gbc.gridx = 1;
     gbc.gridy = 4;
     gridbag.setConstraints(lblTotalValue, gbc);
+    gbc.anchor = GridBagConstraints.WEST;
+    gbc.gridx = 0;
+    gbc.gridy = 5;
+    gridbag.setConstraints(texAreaSelectedOrders, gbc);
 
     gbc.insets.left = 2;
     gbc.insets.right = 2;
@@ -236,6 +246,9 @@ public class OrderManager extends JFrame {
   public void setTxtAdditionalSH(JTextField aSHJTextF){
     this.txtAdditionalSH = aSHJTextF;
   }
+  public void setTexAreaSelectedOrders(String selOrd){
+    texAreaSelectedOrders.setText(selOrd);
+  }
 } // End of class OrderManager
 
 class ButtonHandler implements ActionListener {
@@ -275,14 +288,13 @@ class ButtonHandler implements ActionListener {
       if (e.getActionCommand().equals(OrderManager.CREATE_ORDER)
       ) {
         //get input values
-        String orderType = (String) objOrderManager.getOrderType();
+        String orderType = objOrderManager.getOrderType();
 
         String strID = objOrderManager.getID();
         String strOrderAmount =
                 objOrderManager.getOrderAmount();
         String strTax = objOrderManager.getTax();
         String strSH = objOrderManager.getSH();
-        System.out.println(strSH+"SH");
 
         double dblOrderAmount = 0.0;
         double dblTax = 0.0;
@@ -307,6 +319,7 @@ class ButtonHandler implements ActionListener {
         Order order = createOrder(strID, orderType, dblOrderAmount,
                 dblTax, dblSH);
 
+        if (order!=null){
         //Get the Visitor
         OrderVisitor visitor =
                 objOrderManager.getOrderVisitor();
@@ -317,18 +330,79 @@ class ButtonHandler implements ActionListener {
         objOrderManager.setTotalValue(
                 " Order Created Successfully");
       }
+        else {
+          //indica que ya existe y no se creo la orden
+          objOrderManager.setTotalValue(
+                  " Already Exist Order !!");
+        }
+      }
     if (e.getActionCommand().equals(OrderManager.GET_TOTAL)) {
-      //Get the Visitor
-      OrderVisitor visitor =
+      //Get the Visitor----------Se elimino la funcionalidad anterior
+      /*OrderVisitor visitor =
         objOrderManager.getOrderVisitor();
       totalResult = Double.toString(visitor.getOrderTotal());
       totalResult = " Orders Total = " + totalResult;
       objOrderManager.setTotalValue(totalResult);
+      */
+      //obtener las ordenes especificas
+      String orderType = (String) objOrderManager.getOrderType();
+      OrderVisitor visitor = objOrderManager.getOrderVisitor();
+      Iterator specifOrders = visitor.getFilteredOrders(orderType);
+      String selectedOrders =
+              "Id --- Amount --- TAX --- S&H " + "\n" +
+                      "--------------------------------------";
+
+      while (specifOrders.hasNext()) {
+        Order o = (Order) specifOrders.next();
+        if (o.getClass().equals(CaliforniaOrder.class)){
+          selectedOrders = selectedOrders + "\n" +
+                  ((CaliforniaOrder) o).getIdOrder() + " - " + ((CaliforniaOrder) o).getOrderAmount() +
+                  " - " + ((CaliforniaOrder) o).getAdditionalTax() +" - "+" 0 ";
+        } else if (o.getClass().equals(NonCaliforniaOrder.class)) {
+          selectedOrders = selectedOrders + "\n" +
+                  ((NonCaliforniaOrder) o).getIdOrder() + " - " + ((NonCaliforniaOrder) o).getOrderAmount() +
+                  " - " + "0" +" - "+ "0";
+        } else if (o.getClass().equals(OverseasOrder.class)) {
+          selectedOrders = selectedOrders + "\n" + ((OverseasOrder) o).getIdOrder() +" - "+((OverseasOrder) o).getOrderAmount()+" - "+ "0"+((OverseasOrder) o).getAdditionalSH();
+        }else if (o.getClass().equals(EuropeanOrder.class)){
+          selectedOrders = selectedOrders + "\n" + ((EuropeanOrder) o).getIdOrder() +" - "+((EuropeanOrder) o).getOrderAmount()+" - "+ "0"+((EuropeanOrder) o).getAdditionalSH();
+        }
+      }
+      objOrderManager.setTexAreaSelectedOrders(selectedOrders);
     }
   }
 
   public Order createOrder(String idOr ,String orderType,
       double orderAmount, double tax, double SH) {
+    //se revisa si existe y una orden con ese id
+    OrderVisitor visitor = objOrderManager.getOrderVisitor();
+    Iterator specifOrders = visitor.getFilteredOrders(orderType);
+    Boolean flag = false;
+    while (specifOrders.hasNext()) {
+      Order o = (Order) specifOrders.next();
+      if (o.getClass().equals(CaliforniaOrder.class)){
+        if (((CaliforniaOrder) o).getIdOrder().equals(idOr)){
+          flag = true;
+          break;
+        }
+      } else if (o.getClass().equals(NonCaliforniaOrder.class)) {
+        if (((NonCaliforniaOrder) o).getIdOrder().equals(idOr)){
+          flag = true;
+          break;
+        }
+      } else if (o.getClass().equals(OverseasOrder.class)) {
+        if (((OverseasOrder) o).getIdOrder().equals(idOr)){
+          flag = true;
+          break;
+        }
+      }else if (o.getClass().equals(EuropeanOrder.class)){
+        if (((EuropeanOrder) o).getIdOrder().equals(idOr)){
+          flag = true;
+          break;
+        }
+      }
+    }
+    if (flag!=true){
     if (orderType.equalsIgnoreCase(OrderManager.CA_ORDER)) {
       return new CaliforniaOrder(idOr,orderAmount, tax);
     }
@@ -343,6 +417,8 @@ class ButtonHandler implements ActionListener {
     if(orderType.equalsIgnoreCase(
             OrderManager.EUROPEAN_ORDER)){
       return new EuropeanOrder(idOr,orderAmount,SH);
+    }
+    return null;
     }
     return null;
   }

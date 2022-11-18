@@ -19,7 +19,7 @@ public class FilteredOrders implements Iterator {
         boolean matchFound = false;
         while (ec.hasMoreElements()) {
             Order tempObj = (Order) ec.nextElement();
-            if (tempObj.getClass().equals(
+            if (tempObj.getClass().getName().equals(
                     orderType)) {
                 matchFound = true;
                 nextOrder = tempObj;

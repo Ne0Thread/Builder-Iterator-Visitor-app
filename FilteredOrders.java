@@ -1,15 +1,17 @@
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Vector;
 
 public class FilteredOrders implements Iterator {
+    private Vector v;
     OrderVisitor ordVis;
-    Order nextOrder;
     String orderType;
+    Order nextOrder;
     Enumeration ec;
     public FilteredOrders(OrderVisitor ov,String ordTyp){
-        orderType = ordTyp;
         ordVis = ov;
+        orderType = ordTyp;
         ec = ov.getOrderObjListElements();
     }
     @Override
